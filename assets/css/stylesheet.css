@@ -1,0 +1,47 @@
+body {
+    height: 95vh;
+}
+
+nav {
+    min-height: 4vh;
+}
+
+.banner {
+    height: calc(100vh - 56px);
+    width: 100vw;
+    position: relative;
+    overflow: hidden;
+    background-size: cover !important;
+    background-image: url("/static/images/eric-park-QbX8A8eHfzw-unsplash.jpg");
+    z-index: 1;
+}
+
+.overlay {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    padding-top: 100px;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.timer-container {
+    height: 400px
+}
+
+.timer-large-font {
+    height: 400px;
+    font-size: 10vw;
+    line-height: 400px;
+}
+
+.timer-complete-font {
+    height: 400px;
+    font-size: 5vw;
+    line-height: 400px;
+}
