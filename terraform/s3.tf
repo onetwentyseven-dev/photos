@@ -51,3 +51,37 @@ data "aws_iam_policy_document" "photo_uploads" {
     ]
   }
 }
+
+resource "aws_s3_bucket_notification" "photo_uploads" {
+  bucket      = aws_s3_bucket.photos_uploads.id
+  eventbridge = true
+}
+
+resource "aws_cloudwatch_event_rule" "process_photo_upload" {
+  name        = "process-photo-upload"
+  description = "Triggers a lambda to pull a file out of S3, generate a thumbnail and extract the exif data and save it to the database"
+
+  event_pattern = jsonencode({
+    source      = ["aws.s3"],
+    detail-type = ["Object Created"],
+    detail = {
+      bucket = {
+        name = [aws_s3_bucket.photos_uploads.id]
+      }
+    }
+
+  })
+}
+
+resource "aws_cloudwatch_event_target" "process_photo_upload" {
+  rule = aws_cloudwatch_event_rule.process_photo_upload.name
+  arn  = module.photos_processor.function_arn
+}
+
+
+resource "aws_lambda_permission" "allow_eventbridge" {
+  action        = "lambda:InvokeFunction"
+  function_name = module.photos_processor.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.process_photo_upload.arn
+}

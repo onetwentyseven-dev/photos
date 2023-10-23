@@ -30,9 +30,12 @@ var appConfig struct {
 	Session struct {
 		Key string `ssm:"/photos/session_key,required"`
 	}
-	PhotosBucket string             `ssm:"/photos/photos_bucket,required"`
-	Environment  photos.Environment `env:"ENVIRONMENT,required"`
-	Server       struct {
+	Buckets struct {
+		Photos  string `env:"PHOTOS_BUCKET,required"`
+		Uploads string `env:"PHOTOS_UPLOADS_BUCKET,required"`
+	}
+	Environment photos.Environment `env:"ENVIRONMENT,required"`
+	Server      struct {
 		Port string `env:"SERVER_PORT" default:"8080"`
 	}
 }

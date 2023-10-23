@@ -5,14 +5,19 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"io/fs"
 	"os"
 	"strings"
+	"sync"
 	"text/template"
 
 	"github.com/joho/godotenv"
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
+	"github.com/sirupsen/logrus"
 )
+
+var logger = logrus.New()
 
 func RunAir() error {
 	godotenv.Load()
@@ -93,39 +98,55 @@ func Deploy() error {
 	if err != nil {
 		return err
 	}
-	for _, entry := range entries {
 
-		script := []string{
-			// cd into the directory
-			"cd ./bin/{{.lambda}}",
-			// create a zip file that is the same name as the directory and add the bootstrap file to the zip
-			"zip {{.lambda}}.zip bootstrap",
-			// mv the zip file up to the bin directory
-			"mv {{.lambda}}.zip ../",
-		}
-
-		err := executeScript(script, map[string]string{
-			"lambda": entry.Name(),
-		})
-		if err != nil {
-			return err
-		}
-	}
+	var wg = new(sync.WaitGroup)
 
 	for _, entry := range entries {
+		wg.Add(1)
+		go func(entry fs.DirEntry) {
+			defer wg.Done()
 
-		scripts := []string{
-			"aws-vault exec --no-session ots -- aws lambda update-function-code --function-name {{.lambda}} --zip-file fileb://./bin/{{.lambda}}.zip",
-		}
+			logEntry := logrus.NewEntry(logger).WithField("entry", entry.Name())
 
-		err := executeScript(scripts, map[string]string{
-			"lambda": entry.Name(),
-		})
-		if err != nil {
-			return err
-		}
+			script := []string{
+				// cd into the directory
+				"cd ./bin/{{.lambda}}",
+				// create a zip file that is the same name as the directory and add the bootstrap file to the zip
+				"zip -q {{.lambda}}.zip bootstrap",
+				// Upload the lambda function code
+				"aws-vault exec --no-session ots -- aws lambda update-function-code --function-name {{.lambda}} --zip-file fileb://{{.lambda}}.zip --query 'Handler'",
+			}
 
+			// logEntry.Info("Upload Lambda Function Code")
+
+			err := executeScript(script, map[string]string{
+				"lambda": entry.Name(),
+			})
+			if err != nil {
+				logEntry.WithError(err).Fatal("failed to upload lambda function code")
+				return
+			}
+
+			// logEntry.Info("Upload Lambda Function Configuration")
+		}(entry)
 	}
+
+	wg.Wait()
+
+	// for _, entry := range entries {
+
+	// 	scripts := []string{
+	// 		"aws-vault exec --no-session ots -- aws lambda update-function-code --function-name {{.lambda}} --zip-file fileb://./bin/{{.lambda}}.zip",
+	// 	}
+
+	// 	err := executeScript(scripts, map[string]string{
+	// 		"lambda": entry.Name(),
+	// 	})
+	// 	if err != nil {
+	// 		return err
+	// 	}
+
+	// }
 	return nil
 }
 

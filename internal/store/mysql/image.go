@@ -11,7 +11,7 @@ import (
 )
 
 var imageTableColumns = []string{
-	"id", "user_id", "name", "description", "status", "ts_created", "ts_updated",
+	"id", "user_id", "name", "description", "status", "processing_errors", "image_exif_data", "ts_created", "ts_updated",
 }
 
 type ImageRepository struct {

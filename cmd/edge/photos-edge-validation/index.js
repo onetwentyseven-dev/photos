@@ -104,7 +104,7 @@ async function handleViewerRequest(event, cb) {
 
         // Trim leading slash from the beginning of the URI
         const name = request.uri.replace(/^\//, '');
-        const extension = request.uri.split('.').pop();
+        const extension = request.uri.split('.').pop().toLowerCase();
 
         const postOptions = {
             method: "POST",

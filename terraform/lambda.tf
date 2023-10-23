@@ -1,19 +1,19 @@
 locals {
   default_envs = {
-    "APP_URL"             = "https://${aws_apigatewayv2_domain_name.photos.domain_name}",
-    "AUTH0_DOMAIN"        = "onetwentyseven.us.auth0.com",
-    "AUTH0_CLIENT_ID"     = "qXN9bddpwY7EpoF7RTYno2Y3GlkGV5tA"
-    "AUTH0_CALLBACK_PATH" = "/oauth/callback"
-    "DB_HOST"             = "aws.connect.psdb.cloud"
-    "DB_NAME"             = "photos"
-    "DB_USER"             = "2p2p2trqlegwtwae66q2"
-    "MODE"                = "lambda"
-    "ENVIRONMENT"         = "production"
-
+    "APP_URL"               = "https://${aws_apigatewayv2_domain_name.photos.domain_name}",
+    "AUTH0_DOMAIN"          = "onetwentyseven.us.auth0.com",
+    "AUTH0_CLIENT_ID"       = "qXN9bddpwY7EpoF7RTYno2Y3GlkGV5tA"
+    "AUTH0_CALLBACK_PATH"   = "/oauth/callback"
+    "DB_HOST"               = "aws.connect.psdb.cloud"
+    "DB_NAME"               = "photos"
+    "DB_USER"               = "2p2p2trqlegwtwae66q2"
+    "MODE"                  = "lambda"
+    "ENVIRONMENT"           = "production"
+    "PHOTOS_BUCKET"         = aws_s3_bucket.photos.id,
+    "PHOTOS_UPLOADS_BUCKET" = aws_s3_bucket.photos_uploads.id,
 
   }
 }
-
 
 module "photos_handler" {
   source  = "onetwentyseven-dev/lambda/aws"
@@ -28,8 +28,6 @@ module "photos_handler" {
 
   environment_variables = local.default_envs
 }
-
-
 
 module "photos_edge_validation" {
   source = "./modules/photos_edge_validation"
@@ -73,9 +71,10 @@ module "photos_processor" {
   source  = "onetwentyseven-dev/lambda/aws"
   version = "~> 1"
 
-  function_name    = "photos-processor"
-  function_runtime = "provided.al2"
-  function_memory  = 128
+  function_name     = "photos-processor"
+  function_runtime  = "provided.al2"
+  function_memory   = 128
+  paramstore_prefix = "/photos"
 
   log_retention_in_days = 7
 
