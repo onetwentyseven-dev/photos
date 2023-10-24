@@ -24,6 +24,12 @@ func Plan() error {
 	return sh.RunV("aws-vault", "exec", "--no-session", profile, "--", "terraform", "plan")
 }
 
+func Refresh() error {
+	godotenv.Load()
+
+	return sh.RunV("aws-vault", "exec", "--no-session", profile, "--", "terraform", "refresh")
+}
+
 func Init() error {
 	godotenv.Load()
 

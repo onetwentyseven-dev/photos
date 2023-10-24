@@ -1,0 +1,41 @@
+[0m[1mmodule.photos_edge_validation.data.aws_region.current: Reading...[0m[0m
+[0m[1mmodule.photos_edge_validation.data.aws_caller_identity.current: Reading...[0m[0m
+[0m[1mmodule.photos_edge_validation.data.aws_iam_policy_document.lambda_assume_role: Reading...[0m[0m
+[0m[1mmodule.photos_edge_validation.data.aws_region.current: Read complete after 0s [id=us-east-1][0m
+[0m[1mmodule.photos_edge_validation.data.aws_iam_policy_document.lambda_assume_role: Read complete after 0s [id=1349007126][0m
+[0m[1mmodule.photos_edge_validation.aws_iam_role.lambda: Refreshing state... [id=photos-edge-validation-lambda-us-east-1][0m
+[0m[1mmodule.photos_edge_validation.data.aws_caller_identity.current: Read complete after 1s [id=816459443219][0m
+[0m[1mmodule.photos_edge_validation.aws_iam_role_policy_attachment.lambda: Refreshing state... [id=photos-edge-validation-lambda-us-east-1-20231022173036291800000003][0m
+[0m[1mmodule.photos_edge_validation.aws_lambda_function.function: Refreshing state... [id=photos-edge-validation][0m
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  [33m~[0m update in-place[0m
+
+Terraform will perform the following actions:
+
+[1m  # module.photos_edge_validation.aws_lambda_function.function[0m will be updated in-place
+[0m  [33m~[0m[0m resource "aws_lambda_function" "function" {
+        id                             = "photos-edge-validation"
+      [33m~[0m[0m qualified_arn                  = "arn:aws:lambda:us-east-1:816459443219:function:photos-edge-validation:40" -> (known after apply)
+      [33m~[0m[0m qualified_invoke_arn           = "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:816459443219:function:photos-edge-validation:40/invocations" -> (known after apply)
+        tags                           = {}
+      [33m~[0m[0m version                        = "40" -> (known after apply)
+        [90m# (19 unchanged attributes hidden)[0m[0m
+
+        [90m# (2 unchanged blocks hidden)[0m[0m
+    }
+
+[1mPlan:[0m 0 to add, 1 to change, 0 to destroy.
+[0m[33m╷[0m[0m
+[33m│[0m [0m[1m[33mWarning: [0m[0m[1mResource targeting is in effect[0m
+[33m│[0m [0m
+[33m│[0m [0m[0mYou are creating a plan with the -target option, which means that the result of this plan may not represent all of the changes requested by the current configuration.
+[33m│[0m [0m
+[33m│[0m [0mThe -target option is not for routine use, and is provided only for exceptional situations such as recovering from errors or mistakes, or when Terraform specifically suggests to use it as part of an error message.
+[33m╵[0m[0m
+[90m
+─────────────────────────────────────────────────────────────────────────────[0m
+
+Note: You didn't use the -out option to save this plan, so Terraform can't
+guarantee to take exactly these actions if you run "terraform apply" now.

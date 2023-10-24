@@ -15,24 +15,11 @@ resource "aws_lambda_function" "function" {
   source_code_hash = filebase64sha256(local.lambda_handler)
   runtime          = var.function_runtime
   role             = aws_iam_role.lambda.arn
-  handler          = var.function_handler != "" ? var.function_handler : var.function_name
+  handler          = var.function_handler
   timeout          = var.function_timeout
   memory_size      = var.function_memory
   architectures    = ["x86_64"]
   publish          = var.enable_versions
-
-  dynamic "vpc_config" {
-    for_each = length(var.vpc_subnet_ids) > 0 || length(var.vpc_security_group_ids) > 0 ? [1] : []
-    content {
-      subnet_ids         = var.vpc_subnet_ids
-      security_group_ids = var.vpc_security_group_ids
-    }
-  }
-
-  environment {
-    variables = var.environment_variables
-  }
-
 }
 
 data "aws_iam_policy_document" "lambda_assume_role" {
