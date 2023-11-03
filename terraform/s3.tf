@@ -8,29 +8,26 @@ resource "aws_s3_bucket" "photos" {
   bucket = "photos-${random_string.bucket_name.result}-${var.region}"
 }
 
-resource "aws_s3_bucket" "photos_uploads" {
-  bucket = "photos-${random_string.bucket_name.result}-uploads-${var.region}"
+
+# resource "aws_s3_bucket_acl" "photos" {
+#   bucket     = aws_s3_bucket.photos.id
+#   acl        = "private"
+#   depends_on = [aws_s3_bucket_ownership_controls.photos]
+# }
+
+# resource "aws_s3_bucket_ownership_controls" "photos" {
+#   bucket = aws_s3_bucket.photos.id
+#   rule {
+#     object_ownership = "BucketOwnerEnforced"
+#   }
+# }
+
+resource "aws_s3_bucket_policy" "photos" {
+  bucket = aws_s3_bucket.photos.id
+  policy = data.aws_iam_policy_document.photos.json
 }
 
-resource "aws_s3_bucket_acl" "photo_uploads" {
-  bucket     = aws_s3_bucket.photos_uploads.id
-  acl        = "private"
-  depends_on = [aws_s3_bucket_ownership_controls.photo_uploads]
-}
-
-resource "aws_s3_bucket_ownership_controls" "photo_uploads" {
-  bucket = aws_s3_bucket.photos_uploads.id
-  rule {
-    object_ownership = "BucketOwnerEnforced"
-  }
-}
-
-resource "aws_s3_bucket_policy" "photo_uploads" {
-  bucket = aws_s3_bucket.photos_uploads.id
-  policy = data.aws_iam_policy_document.photo_uploads.json
-}
-
-data "aws_iam_policy_document" "photo_uploads" {
+data "aws_iam_policy_document" "photos" {
   statement {
     sid    = "AllowCloudfrontOAI"
     effect = "Allow"
@@ -47,10 +44,11 @@ data "aws_iam_policy_document" "photo_uploads" {
       ]
     }
     resources = [
-      "${aws_s3_bucket.photos_uploads.arn}/*"
+      "${aws_s3_bucket.photos.arn}/*"
     ]
   }
 }
+
 
 resource "aws_s3_bucket_notification" "photo_uploads" {
   bucket      = aws_s3_bucket.photos_uploads.id
@@ -66,7 +64,12 @@ resource "aws_cloudwatch_event_rule" "process_photo_upload" {
     detail-type = ["Object Created"],
     detail = {
       bucket = {
-        name = [aws_s3_bucket.photos_uploads.id]
+        name = [aws_s3_bucket.photos.id]
+      },
+      object = {
+        key = [
+          "originals/*"
+        ]
       }
     }
 

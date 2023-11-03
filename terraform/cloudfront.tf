@@ -45,8 +45,13 @@ resource "aws_cloudfront_distribution" "upload" {
   is_ipv6_enabled = true
 
   origin {
-    domain_name = aws_s3_bucket.photos_uploads.bucket_regional_domain_name
+    domain_name = aws_s3_bucket.photos.bucket_regional_domain_name
     origin_id   = local.uploads_origin_id
+
+    custom_header {
+      name  = "x-photos-bucket"
+      value = aws_s3_bucket.photos.id
+    }
 
     s3_origin_config {
       origin_access_identity = aws_cloudfront_origin_access_identity.upload.cloudfront_access_identity_path
@@ -68,25 +73,18 @@ resource "aws_cloudfront_distribution" "upload" {
 
     lambda_function_association {
       event_type = "viewer-request"
-      lambda_arn = module.photos_edge_validation.function_qualified_arn
+      lambda_arn = module.photos_upload_edge_viewer.function_qualified_arn
     }
     lambda_function_association {
       event_type = "origin-request"
-      lambda_arn = module.photos_edge_validation.function_qualified_arn
+      lambda_arn = module.photos_upload_edge_origin.function_qualified_arn
     }
     lambda_function_association {
       event_type = "origin-response"
-      lambda_arn = module.photos_edge_validation.function_qualified_arn
-    }
-
-    lambda_function_association {
-      event_type = "viewer-response"
-      lambda_arn = module.photos_edge_validation.function_qualified_arn
+      lambda_arn = module.photos_upload_edge_origin.function_qualified_arn
     }
 
   }
-
-
 
   restrictions {
     geo_restriction {

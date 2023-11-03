@@ -24,12 +24,6 @@ resource "aws_ssm_parameter" "photos_bucket" {
   type  = "String"
 }
 
-resource "aws_ssm_parameter" "photo_uploads_bucket" {
-  name  = "${local.ssm_prefix}/photos_uploads_bucket"
-  value = aws_s3_bucket.photos_uploads.bucket
-  type  = "String"
-}
-
 resource "aws_ssm_parameter" "db_pass" {
   name  = "${local.ssm_prefix}/db_pass"
   value = "ChangeMe"
