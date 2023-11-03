@@ -1,0 +1,20 @@
+{
+  "name": "photos-upload",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "/bin/bash ./.scripts/build.sh"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.441.0",
+    "sharp": "^0.32.6"
+  },
+  "devDependencies": {
+    "esbuild": "^0.19.5",
+    "esbuild-node-externals": "^1.9.0"
+  }
+}

@@ -11,7 +11,9 @@ import (
 )
 
 var imageTableColumns = []string{
-	"id", "user_id", "name", "description", "status", "processing_errors", "image_exif_data", "ts_created", "ts_updated",
+	"id", "user_id", "name", "description",
+	"status", "processing_errors", "image_exif_data",
+	"ts_created", "ts_updated",
 }
 
 type ImageRepository struct {
@@ -22,24 +24,6 @@ func NewImageRepository(db *sqlx.DB) *ImageRepository {
 	return &ImageRepository{
 		db: db,
 	}
-}
-
-// ImagesByUserID
-func (r *ImageRepository) ImagesByUserID(ctx context.Context, userID string) ([]*photos.Image, error) {
-
-	var images []*photos.Image
-	query, args, err := sq.Select(imageTableColumns...).From("images").Where(sq.Eq{"user_id": userID}).ToSql()
-	if err != nil {
-		return nil, err
-	}
-
-	err = r.db.SelectContext(ctx, &images, query, args...)
-	if err != nil {
-		return nil, err
-	}
-
-	return images, err
-
 }
 
 func (r *ImageRepository) Image(ctx context.Context, id string) (*photos.Image, error) {
@@ -58,6 +42,23 @@ func (r *ImageRepository) Image(ctx context.Context, id string) (*photos.Image, 
 	return &image, err
 }
 
+func (r *ImageRepository) ImagesByUserID(ctx context.Context, userID string) ([]*photos.Image, error) {
+
+	var images []*photos.Image
+	query, args, err := sq.Select(imageTableColumns...).From("images").Where(sq.Eq{"user_id": userID}).ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	err = r.db.SelectContext(ctx, &images, query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	return images, err
+
+}
+
 func (r *ImageRepository) CreateImage(ctx context.Context, image *photos.Image) error {
 
 	now := time.Now()
@@ -68,8 +69,7 @@ func (r *ImageRepository) CreateImage(ctx context.Context, image *photos.Image) 
 	return err
 }
 
-// UpdateImageByImageID
-func (r *ImageRepository) UpdateImageByImageID(ctx context.Context, image *photos.Image) error {
+func (r *ImageRepository) UpdateImage(ctx context.Context, image *photos.Image) error {
 
 	now := time.Now()
 	image.TSUpdated = now
@@ -83,7 +83,6 @@ func (r *ImageRepository) UpdateImageByImageID(ctx context.Context, image *photo
 	return err
 }
 
-// DeleteImageByImageID
 func (r *ImageRepository) DeleteImageByImageID(ctx context.Context, imageID string) error {
 
 	query, args, err := sq.Delete("images").Where(sq.Eq{"id": imageID}).ToSql()

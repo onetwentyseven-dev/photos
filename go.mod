@@ -14,6 +14,7 @@ require (
 	github.com/ddouglas/authenticator v0.1.0
 	github.com/ddouglas/config-ssm v1.0.0
 	github.com/fatih/structs v1.1.0
+	github.com/fogleman/gg v1.3.0
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/golang-migrate/migrate/v4 v4.16.2
 	github.com/google/uuid v1.3.1
@@ -23,6 +24,8 @@ require (
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/joho/godotenv v1.5.1
 	github.com/maragudk/gomponents v0.20.1
+	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
+	github.com/rwcarlsen/goexif v0.0.0-20190401172101-9e8deecbddbd
 	github.com/sirupsen/logrus v1.9.3
 	github.com/srinathgs/mysqlstore v0.0.0-20200417050510-9cbb9420fc4c
 )
@@ -45,6 +48,7 @@ require (
 	github.com/aws/smithy-go v1.15.0 // indirect
 	github.com/coreos/go-oidc/v3 v3.6.0 // indirect
 	github.com/go-jose/go-jose/v3 v3.0.0 // indirect
+	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
@@ -55,6 +59,7 @@ require (
 	github.com/stretchr/testify v1.8.2 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	golang.org/x/crypto v0.14.0 // indirect
+	golang.org/x/image v0.13.0 // indirect
 	golang.org/x/net v0.16.0 // indirect
 	golang.org/x/oauth2 v0.13.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect

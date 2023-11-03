@@ -1,0 +1,12 @@
+{
+  "name": "photos-upload-viewer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "zip photos-upload-viewer.zip bundle.js viewer-request.js t.txt"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

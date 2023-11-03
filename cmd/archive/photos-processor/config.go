@@ -34,6 +34,10 @@ var appConfig struct {
 		Photos  string `env:"PHOTOS_BUCKET,required"`
 		Uploads string `env:"PHOTOS_UPLOADS_BUCKET,required"`
 	}
+	Thumbmails struct {
+		Width  int `env:"THUMBNAIL_WIDTH,required"`
+		Height int `env:"THUMBNAIL_HEIGHT,required"`
+	}
 	Environment photos.Environment `env:"ENVIRONMENT,required"`
 	Server      struct {
 		Port string `env:"SERVER_PORT" default:"8080"`

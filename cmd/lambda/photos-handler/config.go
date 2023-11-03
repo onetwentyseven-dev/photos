@@ -12,10 +12,9 @@ import (
 )
 
 var appConfig struct {
-	Mode          string `env:"MODE" default:"server"`
-	RunMigrations bool   `env:"RUN_MIGRATIONS" default:"false"`
-	AppURL        string `env:"APP_URL,required"`
-	Auth0         struct {
+	Mode   string `env:"MODE" default:"server"`
+	AppURL string `env:"APP_URL,required"`
+	Auth0  struct {
 		CallbackPath string `env:"AUTH0_CALLBACK_PATH,required"`
 		ClientID     string `env:"AUTH0_CLIENT_ID,required"`
 		ClientSecret string `ssm:"/photos/auth0_client_secret,required"`
@@ -31,8 +30,7 @@ var appConfig struct {
 		Key string `ssm:"/photos/session_key,required"`
 	}
 	Buckets struct {
-		Photos  string `env:"PHOTOS_BUCKET,required"`
-		Uploads string `env:"PHOTOS_UPLOADS_BUCKET,required"`
+		Photos string `env:"PHOTOS_BUCKET,required"`
 	}
 	Environment photos.Environment `env:"ENVIRONMENT,required"`
 	Server      struct {

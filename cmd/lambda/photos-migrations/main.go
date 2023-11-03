@@ -29,6 +29,10 @@ type payload struct {
 
 func (a *app) handle(ctx context.Context, operation *payload) error {
 
+	if operation.Operation == "" {
+		logger.Fatal("operation is required")
+	}
+
 	a.logger.WithField("operation", operation.Operation).Info("running migrations")
 
 	migrateDriver, err := mysqlMigrateDriver.WithInstance(a.db, &mysqlMigrateDriver.Config{
@@ -63,10 +67,19 @@ func (a *app) handle(ctx context.Context, operation *payload) error {
 		if err != nil && err != migrate.ErrNoChange {
 			logger.WithError(err).Fatal("failed to run migrations")
 		}
-
+	default:
+		logger.WithField("operation", operation.Operation).Fatal("unknown operation")
 	}
 
 	a.logger.WithField("operation", operation.Operation).Info("migration complete")
+	a.logger.WithField("operation", operation.Operation).Info("checking migration status")
+
+	version, dirty, err := m.Version()
+	if err != nil {
+		logger.WithError(err).Fatal("failed to get migration version")
+	}
+
+	a.logger.WithField("version", version).WithField("dirty", dirty).Info("migration status")
 
 	return nil
 

@@ -7,7 +7,6 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
-	"photos"
 	"photos/internal/server"
 	"photos/internal/store/mysql"
 	"syscall"
@@ -16,8 +15,6 @@ import (
 	"github.com/akrylysov/algnhsa"
 	awsConfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/golang-migrate/migrate/v4"
-	mysqlMigrateDriver "github.com/golang-migrate/migrate/v4/database/mysql"
 	"github.com/srinathgs/mysqlstore"
 
 	"github.com/ddouglas/authenticator"
@@ -46,32 +43,6 @@ func main() {
 	}
 
 	s3Client := s3.NewFromConfig(awsCfg)
-
-	if appConfig.RunMigrations {
-		migrateDriver, err := mysqlMigrateDriver.WithInstance(db, &mysqlMigrateDriver.Config{
-			MigrationsTable:  "migrations",
-			DatabaseName:     appConfig.DB.Name,
-			StatementTimeout: time.Second * 5,
-		})
-		if err != nil {
-			logger.WithError(err).Fatal("failed to initialize migration driver")
-		}
-
-		migrateSource, err := photos.MigrationFS()
-		if err != nil {
-			logger.WithError(err).Fatal("failed to initialize migration source")
-		}
-
-		m, err := migrate.NewWithInstance("iofs", migrateSource, "mysql", migrateDriver)
-		if err != nil {
-			logger.WithError(err).Fatal("failed to initialize migration instance")
-		}
-
-		err = m.Up()
-		if err != nil && err != migrate.ErrNoChange {
-			logger.WithError(err).Fatal("failed to run migrations")
-		}
-	}
 
 	appURL, err := url.Parse(appConfig.AppURL)
 	if err != nil {

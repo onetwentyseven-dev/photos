@@ -12,6 +12,7 @@ const petiteVueScript = `
 import {createApp} from 'https://unpkg.com/petite-vue?module'
 createApp({
 	files: [],
+	progress: 0,
 	onFileChange(e) {
 		console.log(e)
 		this.files = e.target.files
@@ -23,7 +24,10 @@ createApp({
 
 		for (let i = 0; i<this.files.length; i++) {
 			const file = this.files[i]
-			console.log(file, file.name)
+			if (file.type.indexOf('image/') !== 0) {
+				console.log('Not an image file.')
+				continue
+			}
 			fetch('https://upload.photos.onetwentyseven.dev/' + file.name, {
 				credentials: 'include',
 				method: 'PUT',
@@ -37,6 +41,8 @@ createApp({
 				console.log('Error Processing request', e.message)
 			})
 		}
+
+		// htmx.
 	}
 }).mount("#upload-image")
 `
