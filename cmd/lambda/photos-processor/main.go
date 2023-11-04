@@ -90,8 +90,8 @@ func (a *app) handle(ctx context.Context, event *events.CloudWatchEvent) error {
 	var originalBuffer = new(bytes.Buffer)
 
 	objectOutput, err := a.s3.GetObject(ctx, &s3.GetObjectInput{
-		Bucket: &detail.Bucket.Name,
-		Key:    &detail.Object.Key,
+		Bucket: aws.String(detail.Bucket.Name),
+		Key:    aws.String(detail.Object.Key),
 	})
 	if err != nil {
 		processingFailedFunc(err)
@@ -130,7 +130,7 @@ func (a *app) handle(ctx context.Context, event *events.CloudWatchEvent) error {
 
 	imageMeta.Status = photos.ProcessedImageStatus
 
-	err = a.image.UpdateImageByImageID(ctx, imageMeta)
+	err = a.image.UpdateImage(ctx, imageMeta)
 	if err != nil {
 		processingFailedFunc(err)
 		entry.WithError(err).Error("failed to update image status")
@@ -150,7 +150,7 @@ func (a *app) processingFailed(ctx context.Context, image *photos.Image, entry *
 		image.ProcessingErrors = []string{
 			err.Error(),
 		}
-		err = a.image.UpdateImageByImageID(ctx, image)
+		err = a.image.UpdateImage(ctx, image)
 		if err != nil {
 			entry.WithError(err).Error("failed to update image status")
 		}
@@ -223,32 +223,6 @@ func (a *app) processImage(ctx context.Context, object *s3.GetObjectOutput, deta
 	}
 
 	entry.Info("thumbnail uploaded")
-	entry.Info("uploading original")
-
-	_, err = a.s3.PutObject(ctx, &s3.PutObjectInput{
-		Bucket:      aws.String(appConfig.Buckets.Photos),
-		Key:         aws.String(fmt.Sprintf("original/%s", detail.Object.Key)),
-		Body:        bytes.NewBuffer(buf.Bytes()),
-		ContentType: object.ContentType,
-	})
-	if err != nil {
-		entry.WithError(err).Error("failed to upload thumbnail")
-		return err
-	}
-
-	entry.Info("original uploaded")
-	entry.Info("deleting staged image")
-
-	_, err = a.s3.DeleteObject(ctx, &s3.DeleteObjectInput{
-		Bucket: aws.String(appConfig.Buckets.Uploads),
-		Key:    aws.String(detail.Object.Key),
-	})
-	if err != nil {
-		entry.WithError(err).Error("failed to delete staged image")
-		return err
-	}
-
-	entry.Info("staged image deleted")
 
 	return nil
 

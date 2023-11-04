@@ -51,7 +51,7 @@ data "aws_iam_policy_document" "photos" {
 
 
 resource "aws_s3_bucket_notification" "photo_uploads" {
-  bucket      = aws_s3_bucket.photos_uploads.id
+  bucket      = aws_s3_bucket.photos.id
   eventbridge = true
 }
 
