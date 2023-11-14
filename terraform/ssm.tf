@@ -32,3 +32,4 @@ resource "aws_ssm_parameter" "db_pass" {
     ignore_changes = [value]
   }
 }
+

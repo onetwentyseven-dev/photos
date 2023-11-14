@@ -43,8 +43,8 @@ resource "aws_route53_record" "upload" {
   zone_id = aws_route53_zone.photos.zone_id
 
   alias {
-    name                   = aws_cloudfront_distribution.upload.domain_name
-    zone_id                = aws_cloudfront_distribution.upload.hosted_zone_id
+    name                   = aws_lb.upload.dns_name
+    zone_id                = aws_lb.upload.zone_id
     evaluate_target_health = false
   }
 

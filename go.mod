@@ -15,6 +15,7 @@ require (
 	github.com/ddouglas/config-ssm v1.0.0
 	github.com/fatih/structs v1.1.0
 	github.com/fogleman/gg v1.3.0
+	github.com/go-chi/chi/v5 v5.0.10
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/golang-migrate/migrate/v4 v4.16.2
 	github.com/google/uuid v1.3.1

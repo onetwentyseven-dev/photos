@@ -25,14 +25,17 @@ resource "aws_apigatewayv2_stage" "photos" {
   access_log_settings {
     destination_arn = aws_cloudwatch_log_group.access_logs.arn
     format = jsonencode({
-      httpMethod     = "$context.httpMethod"
-      ip             = "$context.identity.sourceIp"
-      protocol       = "$context.protocol"
-      requestId      = "$context.requestId"
-      requestTime    = "$context.requestTime"
-      responseLength = "$context.responseLength"
-      routeKey       = "$context.routeKey"
-      status         = "$context.status"
+      httpMethod              = "$context.httpMethod"
+      ip                      = "$context.identity.sourceIp"
+      protocol                = "$context.protocol"
+      requestId               = "$context.requestId"
+      requestTime             = "$context.requestTime"
+      responseLength          = "$context.responseLength"
+      routeKey                = "$context.routeKey"
+      status                  = "$context.status"
+      integrationErrorMessage = "$context.integrationErrorMessage"
+      integrationLatency      = "$context.integrationLatency"
+      integrationStatus       = "$context.integrationStatus"
     })
   }
 }

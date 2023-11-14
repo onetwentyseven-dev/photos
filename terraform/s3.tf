@@ -22,32 +22,32 @@ resource "aws_s3_bucket" "photos" {
 #   }
 # }
 
-resource "aws_s3_bucket_policy" "photos" {
-  bucket = aws_s3_bucket.photos.id
-  policy = data.aws_iam_policy_document.photos.json
-}
+# resource "aws_s3_bucket_policy" "photos" {
+#   bucket = aws_s3_bucket.photos.id
+#   policy = data.aws_iam_policy_document.photos.json
+# }
 
-data "aws_iam_policy_document" "photos" {
-  statement {
-    sid    = "AllowCloudfrontOAI"
-    effect = "Allow"
-    actions = [
-      "s3:GetObject",
-      "s3:PutObject",
-      "s3:DeleteObject",
-    ]
+# data "aws_iam_policy_document" "photos" {
+#   statement {
+#     sid    = "AllowCloudfrontOAI"
+#     effect = "Allow"
+#     actions = [
+#       "s3:GetObject",
+#       "s3:PutObject",
+#       "s3:DeleteObject",
+#     ]
 
-    principals {
-      type = "AWS"
-      identifiers = [
-        aws_cloudfront_origin_access_identity.upload.iam_arn
-      ]
-    }
-    resources = [
-      "${aws_s3_bucket.photos.arn}/*"
-    ]
-  }
-}
+#     principals {
+#       type = "AWS"
+#       identifiers = [
+#         aws_cloudfront_origin_access_identity.upload.iam_arn
+#       ]
+#     }
+#     resources = [
+#       "${aws_s3_bucket.photos.arn}/*"
+#     ]
+#   }
+# }
 
 
 resource "aws_s3_bucket_notification" "photo_uploads" {
